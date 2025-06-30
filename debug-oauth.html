@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>OAuth Debug</title>
+</head>
+<body>
+    <h1>OAuth Callback Debug</h1>
+    <div id="info"></div>
+    <script>
+        const info = document.getElementById('info');
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        info.innerHTML = `
+            <h2>Current URL Details:</h2>
+            <p><strong>Full URL:</strong> ${window.location.href}</p>
+            <p><strong>Pathname:</strong> ${window.location.pathname}</p>
+            <p><strong>Search:</strong> ${window.location.search}</p>
+            <p><strong>Hash:</strong> ${window.location.hash}</p>
+            
+            <h2>URL Parameters:</h2>
+            <pre>${JSON.stringify(Object.fromEntries(urlParams), null, 2)}</pre>
+            
+            <h2>Environment Check:</h2>
+            <p><strong>Origin:</strong> ${window.location.origin}</p>
+            <p><strong>Expected Callback:</strong> ${window.location.origin}/callback</p>
+        `;
+    </script>
+</body>
+</html>

@@ -1,34 +1,13 @@
-import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Cloud } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
-import { getAuthCodeFromUrl, exchangeCodeForTokens, storeTokens } from "@/lib/auth";
 
 export default function LoginPage() {
   const { login } = useAuth();
 
-  // Handle OAuth callback
-  useEffect(() => {
-    const handleCallback = async () => {
-      const code = getAuthCodeFromUrl();
-      if (code) {
-        try {
-          const tokens = await exchangeCodeForTokens(code);
-          storeTokens(tokens);
-          // Clear the URL parameters and refresh to trigger auth check
-          window.history.replaceState({}, document.title, window.location.pathname);
-          window.location.reload();
-        } catch (error) {
-          console.error('Error exchanging code for tokens:', error);
-        }
-      }
-    };
-
-    handleCallback();
-  }, []);
-
   const handleLogin = () => {
+    console.log('Login button clicked');
     login();
   };
 

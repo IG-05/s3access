@@ -16,7 +16,11 @@ function getCognitoHostedUIUrl() {
 
 export function redirectToLogin() {
   const cognitoDomain = getCognitoHostedUIUrl();
-  const loginUrl = `${cognitoDomain}/login?client_id=${clientId}&response_type=code&scope=email+openid+profile&redirect_uri=${encodeURIComponent(redirectUri)}`;
+  const currentRedirectUri = `${window.location.origin}/callback`;
+  const loginUrl = `${cognitoDomain}/login?client_id=${clientId}&response_type=code&scope=email+openid+profile&redirect_uri=${encodeURIComponent(currentRedirectUri)}`;
+  console.log('Redirecting to login URL:', loginUrl);
+  console.log('Client ID:', clientId);
+  console.log('Redirect URI:', currentRedirectUri);
   window.location.href = loginUrl;
 }
 
@@ -28,6 +32,12 @@ export function redirectToLogout() {
 
 export async function exchangeCodeForTokens(code: string): Promise<AuthResult> {
   const cognitoDomain = getCognitoHostedUIUrl();
+  
+  console.log('Token exchange details:');
+  console.log('- Domain:', cognitoDomain);
+  console.log('- Client ID:', clientId);
+  console.log('- Code:', code);
+  console.log('- Redirect URI:', redirectUri);
   
   const response = await fetch(`${cognitoDomain}/oauth2/token`, {
     method: 'POST',
@@ -42,11 +52,16 @@ export async function exchangeCodeForTokens(code: string): Promise<AuthResult> {
     }),
   });
 
+  console.log('Token response status:', response.status);
+  
   if (!response.ok) {
-    throw new Error('Failed to exchange code for tokens');
+    const errorText = await response.text();
+    console.error('Token exchange error:', errorText);
+    throw new Error(`Failed to exchange code for tokens: ${response.status} - ${errorText}`);
   }
 
   const tokens = await response.json();
+  console.log('Token exchange successful');
   return {
     accessToken: tokens.access_token,
     idToken: tokens.id_token,

@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useAuth } from "@/hooks/use-auth";
 import LoginPage from "@/pages/login";
+import CallbackPage from "@/pages/callback";
 import UserDashboard from "@/pages/user-dashboard";
 import AdminDashboard from "@/pages/admin-dashboard";
 import NotFound from "@/pages/not-found";
@@ -27,7 +28,7 @@ function AuthenticatedApp() {
   return (
     <Switch>
       <Route path="/login" component={LoginPage} />
-      <Route path="/callback" component={LoginPage} />
+      <Route path="/callback" component={CallbackPage} />
       <Route path="/user-dashboard">
         {user?.role === 'user' ? <UserDashboard /> : <Redirect to="/admin-dashboard" />}
       </Route>
