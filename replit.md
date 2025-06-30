@@ -111,6 +111,13 @@ Changelog:
   - Resolved OAuth scope issues by switching from access tokens to ID tokens
   - Updated client-server authentication flow for proper token handling
   - All dependencies installed and application running successfully
+- June 30, 2025. Enhanced UI and implemented bucket exploration
+  - Replaced modal-based bucket viewing with dedicated explorer page (/bucket/:bucketName)
+  - Fixed UI overlapping issues by removing absolute positioning
+  - Implemented Cognito group-based access control for bucket permissions
+  - Added comprehensive bucket object browsing with search functionality
+  - Enhanced authentication to track and update user Cognito groups
+  - Improved overall application responsiveness and professional styling
 ```
 
 ## User Preferences

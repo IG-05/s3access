@@ -15,6 +15,7 @@ import AdminAnalytics from "@/pages/admin-analytics";
 import AdminSettings from "@/pages/admin-settings";
 import UserAccessRequests from "@/pages/user-access-requests";
 import UserProfile from "@/pages/user-profile";
+import BucketExplorerPage from "@/pages/bucket-explorer";
 import NotFound from "@/pages/not-found";
 
 function AuthenticatedApp() {
@@ -68,6 +69,9 @@ function AuthenticatedApp() {
       </Route>
       <Route path="/admin/settings">
         {user?.role === 'admin' ? <AdminSettings /> : <Redirect to="/user-dashboard" />}
+      </Route>
+      <Route path="/bucket/:bucketName">
+        <BucketExplorerPage />
       </Route>
       <Route path="/">
         <Redirect to={user?.role === 'admin' ? '/admin-dashboard' : '/user-dashboard'} />

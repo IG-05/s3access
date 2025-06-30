@@ -11,6 +11,7 @@ import {
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Database, ExternalLink, Info, Settings, Eye, Trash2, Users, FolderOpen } from "lucide-react";
 import { useState } from "react";
+import { useLocation } from "wouter";
 import { BucketExplorer } from "./bucket-explorer";
 import { BucketDetailsModal } from "./bucket-details-modal";
 import type { S3Bucket } from "@shared/schema";
@@ -24,8 +25,7 @@ interface BucketTableProps {
 export function BucketTable({ buckets, showActions = false, isAdmin = false }: BucketTableProps) {
   const [selectedBucket, setSelectedBucket] = useState<any>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
-  const [explorerOpen, setExplorerOpen] = useState(false);
-  const [explorerBucket, setExplorerBucket] = useState<string>("");
+  const [, setLocation] = useLocation();
 
   const handleViewBucket = (bucket: any) => {
     setSelectedBucket(bucket);
@@ -33,8 +33,7 @@ export function BucketTable({ buckets, showActions = false, isAdmin = false }: B
   };
 
   const handleExploreBucket = (bucket: any) => {
-    setExplorerBucket(bucket.name);
-    setExplorerOpen(true);
+    setLocation(`/bucket/${bucket.name}`);
   };
 
   const handleManagePermissions = (bucket: any) => {
@@ -155,8 +154,8 @@ export function BucketTable({ buckets, showActions = false, isAdmin = false }: B
                           variant="ghost" 
                           size="sm" 
                           className="text-green-600 hover:text-green-800 hover:bg-green-50 dark:hover:bg-green-950"
-                          onClick={() => handleViewBucket(bucket)}
-                          title="View Details"
+                          onClick={() => handleExploreBucket(bucket)}
+                          title="Explore Contents"
                         >
                           <Eye className="h-4 w-4" />
                         </Button>
@@ -205,13 +204,6 @@ export function BucketTable({ buckets, showActions = false, isAdmin = false }: B
         bucket={selectedBucket}
         isOpen={detailsOpen}
         onClose={() => setDetailsOpen(false)}
-      />
-
-      {/* Bucket Explorer */}
-      <BucketExplorer 
-        bucketName={explorerBucket}
-        isOpen={explorerOpen}
-        onClose={() => setExplorerOpen(false)}
       />
     </div>
   );

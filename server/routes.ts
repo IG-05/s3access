@@ -6,6 +6,50 @@ import { listAllS3Buckets, getBucketStats, formatFileSize, getBucketObjects } fr
 import { insertAccessRequestSchema, updateAccessRequestSchema } from "@shared/schema";
 import { z } from "zod";
 
+// Access control function
+async function checkBucketAccess(user: any, bucketName: string): Promise<boolean> {
+  // Admin users have access to all buckets
+  if (user.role === 'admin') {
+    return true;
+  }
+  
+  // Check if user has explicit permission for this bucket
+  const userPermissions = await storage.getUserBucketPermissions(user.id);
+  const hasPermission = userPermissions.some(permission => 
+    permission.bucket.name === bucketName
+  );
+  
+  if (hasPermission) {
+    return true;
+  }
+  
+  // Check Cognito group-based access
+  // Map bucket naming conventions to Cognito groups
+  const bucketGroups: Record<string, string[]> = {
+    'dev': ['developers', 'dev-team'],
+    'prod': ['admin', 'production-team'],
+    'test': ['qa-team', 'testers', 'developers'],
+    'staging': ['developers', 'qa-team']
+  };
+  
+  // Extract environment from bucket name (e.g., my-app-dev-bucket -> dev)
+  const bucketEnv = extractEnvironmentFromBucket(bucketName);
+  const allowedGroups = bucketGroups[bucketEnv as keyof typeof bucketGroups] || [];
+  
+  // Check if user's Cognito groups intersect with allowed groups
+  const userGroups = user.cognitoGroups || [];
+  return allowedGroups.some((group: string) => userGroups.includes(group));
+}
+
+function extractEnvironmentFromBucket(bucketName: string): string {
+  const name = bucketName.toLowerCase();
+  if (name.includes('-dev-') || name.endsWith('-dev')) return 'dev';
+  if (name.includes('-prod-') || name.endsWith('-prod')) return 'prod';
+  if (name.includes('-test-') || name.endsWith('-test')) return 'test';
+  if (name.includes('-staging-') || name.endsWith('-staging')) return 'staging';
+  return 'unknown';
+}
+
 // Auth middleware
 async function authenticateUser(req: any, res: any, next: any) {
   const authHeader = req.headers.authorization;
@@ -31,7 +75,17 @@ async function authenticateUser(req: any, res: any, next: any) {
       role,
       cognitoGroups: cognitoUser.groups
     });
+  } else {
+    // Update user's groups on each login in case they changed
+    const role = determineUserRole(cognitoUser.groups);
+    user = await storage.updateUser(user.id, {
+      role,
+      cognitoGroups: cognitoUser.groups
+    }) || user;
   }
+
+  // Ensure cognito groups are available for access control
+  user.cognitoGroups = cognitoUser.groups;
 
   req.user = user;
   req.cognitoUser = cognitoUser;
@@ -232,10 +286,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get bucket contents
+  // Get bucket contents with access control
   app.get("/api/buckets/:name/objects", authenticateUser, async (req: any, res) => {
     try {
       const bucketName = req.params.name;
+      const user = req.user;
+      
+      // Check if user has access to this bucket
+      const hasAccess = await checkBucketAccess(user, bucketName);
+      if (!hasAccess) {
+        console.log(`Access denied for user ${user.username} to bucket ${bucketName}. User groups:`, user.cognitoGroups);
+        return res.status(403).json({ error: 'Access denied to this bucket' });
+      }
+      
+      console.log(`Access granted for user ${user.username} to bucket ${bucketName}`);
+      
       const objects = await getBucketObjects(bucketName);
       res.json(objects);
     } catch (error) {
