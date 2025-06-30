@@ -1,70 +1,65 @@
-import { CognitoUserPool, CognitoUser, AuthenticationDetails } from 'amazon-cognito-identity-js';
-
+const region = import.meta.env.VITE_AWS_REGION || 'us-east-1';
 const userPoolId = import.meta.env.VITE_AWS_USER_POOL_ID || '';
 const clientId = import.meta.env.VITE_AWS_USER_POOL_CLIENT_ID || '';
-
-export const userPool = new CognitoUserPool({
-  UserPoolId: userPoolId,
-  ClientId: clientId,
-});
+const redirectUri = `${window.location.origin}/callback`;
 
 export interface AuthResult {
   accessToken: string;
   idToken: string;
-  refreshToken: string;
-  user: CognitoUser;
+  refreshToken?: string;
 }
 
-export function authenticateUser(username: string, password: string): Promise<AuthResult> {
-  return new Promise((resolve, reject) => {
-    const authenticationDetails = new AuthenticationDetails({
-      Username: username,
-      Password: password,
-    });
+// Generate Cognito Hosted UI URLs
+function getCognitoHostedUIUrl() {
+  const domain = `https://${userPoolId.split('_')[1]}-cognito.auth.${region}.amazonaws.com`;
+  return domain;
+}
 
-    const cognitoUser = new CognitoUser({
-      Username: username,
-      Pool: userPool,
-    });
+export function redirectToLogin() {
+  const cognitoDomain = getCognitoHostedUIUrl();
+  const loginUrl = `${cognitoDomain}/login?client_id=${clientId}&response_type=code&scope=email+openid+profile&redirect_uri=${encodeURIComponent(redirectUri)}`;
+  window.location.href = loginUrl;
+}
 
-    cognitoUser.authenticateUser(authenticationDetails, {
-      onSuccess: (result) => {
-        resolve({
-          accessToken: result.getAccessToken().getJwtToken(),
-          idToken: result.getIdToken().getJwtToken(),
-          refreshToken: result.getRefreshToken().getToken(),
-          user: cognitoUser,
-        });
-      },
-      onFailure: (err) => {
-        reject(err);
-      },
-      newPasswordRequired: (userAttributes, requiredAttributes) => {
-        // For now, reject with a specific error that the UI can handle
-        reject({
-          code: 'NewPasswordRequired',
-          message: 'New password required',
-          user: cognitoUser,
-          userAttributes,
-          requiredAttributes
-        });
-      }
-    });
+export function redirectToLogout() {
+  const cognitoDomain = getCognitoHostedUIUrl();
+  const logoutUrl = `${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(window.location.origin)}`;
+  window.location.href = logoutUrl;
+}
+
+export async function exchangeCodeForTokens(code: string): Promise<AuthResult> {
+  const cognitoDomain = getCognitoHostedUIUrl();
+  
+  const response = await fetch(`${cognitoDomain}/oauth2/token`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: new URLSearchParams({
+      grant_type: 'authorization_code',
+      client_id: clientId,
+      code,
+      redirect_uri: redirectUri,
+    }),
   });
-}
 
-export function getCurrentUser(): CognitoUser | null {
-  return userPool.getCurrentUser();
+  if (!response.ok) {
+    throw new Error('Failed to exchange code for tokens');
+  }
+
+  const tokens = await response.json();
+  return {
+    accessToken: tokens.access_token,
+    idToken: tokens.id_token,
+    refreshToken: tokens.refresh_token,
+  };
 }
 
 export function signOut(): void {
-  const user = getCurrentUser();
-  if (user) {
-    user.signOut();
-  }
   localStorage.removeItem('accessToken');
   localStorage.removeItem('idToken');
   localStorage.removeItem('refreshToken');
+  redirectToLogout();
 }
 
 export function getStoredTokens(): { accessToken: string | null; idToken: string | null; refreshToken: string | null } {
@@ -81,20 +76,8 @@ export function storeTokens(tokens: { accessToken: string; idToken: string; refr
   localStorage.setItem('refreshToken', tokens.refreshToken);
 }
 
-export function completeNewPasswordChallenge(cognitoUser: CognitoUser, newPassword: string): Promise<AuthResult> {
-  return new Promise((resolve, reject) => {
-    cognitoUser.completeNewPasswordChallenge(newPassword, {}, {
-      onSuccess: (result) => {
-        resolve({
-          accessToken: result.getAccessToken().getJwtToken(),
-          idToken: result.getIdToken().getJwtToken(),
-          refreshToken: result.getRefreshToken().getToken(),
-          user: cognitoUser,
-        });
-      },
-      onFailure: (err) => {
-        reject(err);
-      }
-    });
-  });
+// Parse URL parameters to get authorization code
+export function getAuthCodeFromUrl(): string | null {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get('code');
 }

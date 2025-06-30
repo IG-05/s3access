@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { authenticateUser, signOut, getStoredTokens, storeTokens } from '@/lib/auth';
+import { redirectToLogin, signOut, getStoredTokens, storeTokens, exchangeCodeForTokens, getAuthCodeFromUrl } from '@/lib/auth';
 import { apiRequest } from '@/lib/queryClient';
 import type { User } from '@shared/schema';
 
@@ -28,24 +28,35 @@ export function useAuth() {
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
-  // Login mutation
-  const loginMutation = useMutation({
-    mutationFn: async ({ username, password }: { username: string; password: string }) => {
-      const authResult = await authenticateUser(username, password);
-      storeTokens({
-        accessToken: authResult.accessToken,
-        idToken: authResult.idToken,
-        refreshToken: authResult.refreshToken,
-      });
-      return authResult;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/auth/me'] });
-    },
-    onError: (error: any) => {
-      setAuthState(prev => ({ ...prev, error: error.message || 'Login failed' }));
-    },
-  });
+  // Handle OAuth callback
+  useEffect(() => {
+    const handleOAuthCallback = async () => {
+      const code = getAuthCodeFromUrl();
+      if (code) {
+        try {
+          const tokens = await exchangeCodeForTokens(code);
+          storeTokens({
+            accessToken: tokens.accessToken,
+            idToken: tokens.idToken,
+            refreshToken: tokens.refreshToken || '',
+          });
+          // Clear the code from URL and redirect to home
+          window.history.replaceState({}, document.title, window.location.pathname);
+          queryClient.invalidateQueries({ queryKey: ['/api/auth/me'] });
+        } catch (error) {
+          console.error('OAuth callback error:', error);
+          setAuthState(prev => ({ ...prev, error: 'Authentication failed' }));
+        }
+      }
+    };
+
+    handleOAuthCallback();
+  }, [queryClient]);
+
+  // Login function - redirects to Cognito
+  const login = () => {
+    redirectToLogin();
+  };
 
   // Logout mutation
   const logoutMutation = useMutation({
@@ -65,7 +76,7 @@ export function useAuth() {
 
   // Update auth state based on query results
   useEffect(() => {
-    if (authData) {
+    if (authData && authData.user) {
       setAuthState({
         user: authData.user,
         isAuthenticated: true,
@@ -84,9 +95,9 @@ export function useAuth() {
 
   return {
     ...authState,
-    login: loginMutation.mutate,
+    login,
     logout: logoutMutation.mutate,
-    isLoggingIn: loginMutation.isPending,
+    isLoggingIn: false,
     isLoggingOut: logoutMutation.isPending,
   };
 }

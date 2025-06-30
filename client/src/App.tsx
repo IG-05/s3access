@@ -27,6 +27,7 @@ function AuthenticatedApp() {
   return (
     <Switch>
       <Route path="/login" component={LoginPage} />
+      <Route path="/callback" component={LoginPage} />
       <Route path="/user-dashboard">
         {user?.role === 'user' ? <UserDashboard /> : <Redirect to="/admin-dashboard" />}
       </Route>
