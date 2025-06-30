@@ -48,7 +48,7 @@ function requireAdmin(req: any, res: any, next: any) {
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth routes
-  app.post("/api/auth/me", authenticateUser, async (req: any, res) => {
+  app.get("/api/auth/me", authenticateUser, async (req: any, res) => {
     res.json({
       user: req.user,
       cognitoUser: req.cognitoUser
