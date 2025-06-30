@@ -8,6 +8,13 @@ import LoginPage from "@/pages/login";
 import CallbackPage from "@/pages/callback";
 import UserDashboard from "@/pages/user-dashboard";
 import AdminDashboard from "@/pages/admin-dashboard";
+import AdminBuckets from "@/pages/admin-buckets";
+import AdminUsers from "@/pages/admin-users";
+import AdminRequests from "@/pages/admin-requests";
+import AdminAnalytics from "@/pages/admin-analytics";
+import AdminSettings from "@/pages/admin-settings";
+import UserAccessRequests from "@/pages/user-access-requests";
+import UserProfile from "@/pages/user-profile";
 import NotFound from "@/pages/not-found";
 
 function AuthenticatedApp() {
@@ -42,25 +49,25 @@ function AuthenticatedApp() {
         {user?.role === 'admin' ? <AdminDashboard /> : <Redirect to="/user-dashboard" />}
       </Route>
       <Route path="/access-requests">
-        {user?.role === 'user' ? <UserDashboard /> : <Redirect to="/admin-dashboard" />}
+        {user?.role === 'user' ? <UserAccessRequests /> : <Redirect to="/admin-dashboard" />}
       </Route>
       <Route path="/profile">
-        {user?.role === 'user' ? <UserDashboard /> : <Redirect to="/admin-dashboard" />}
+        {user?.role === 'user' ? <UserProfile /> : <Redirect to="/admin-dashboard" />}
       </Route>
       <Route path="/admin/buckets">
-        {user?.role === 'admin' ? <AdminDashboard /> : <Redirect to="/user-dashboard" />}
+        {user?.role === 'admin' ? <AdminBuckets /> : <Redirect to="/user-dashboard" />}
       </Route>
       <Route path="/admin/users">
-        {user?.role === 'admin' ? <AdminDashboard /> : <Redirect to="/user-dashboard" />}
+        {user?.role === 'admin' ? <AdminUsers /> : <Redirect to="/user-dashboard" />}
       </Route>
       <Route path="/admin/requests">
-        {user?.role === 'admin' ? <AdminDashboard /> : <Redirect to="/user-dashboard" />}
+        {user?.role === 'admin' ? <AdminRequests /> : <Redirect to="/user-dashboard" />}
       </Route>
       <Route path="/admin/analytics">
-        {user?.role === 'admin' ? <AdminDashboard /> : <Redirect to="/user-dashboard" />}
+        {user?.role === 'admin' ? <AdminAnalytics /> : <Redirect to="/user-dashboard" />}
       </Route>
       <Route path="/admin/settings">
-        {user?.role === 'admin' ? <AdminDashboard /> : <Redirect to="/user-dashboard" />}
+        {user?.role === 'admin' ? <AdminSettings /> : <Redirect to="/user-dashboard" />}
       </Route>
       <Route path="/">
         <Redirect to={user?.role === 'admin' ? '/admin-dashboard' : '/user-dashboard'} />
