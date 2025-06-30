@@ -41,6 +41,27 @@ function AuthenticatedApp() {
       <Route path="/admin-dashboard">
         {user?.role === 'admin' ? <AdminDashboard /> : <Redirect to="/user-dashboard" />}
       </Route>
+      <Route path="/access-requests">
+        {user?.role === 'user' ? <UserDashboard /> : <Redirect to="/admin-dashboard" />}
+      </Route>
+      <Route path="/profile">
+        {user?.role === 'user' ? <UserDashboard /> : <Redirect to="/admin-dashboard" />}
+      </Route>
+      <Route path="/admin/buckets">
+        {user?.role === 'admin' ? <AdminDashboard /> : <Redirect to="/user-dashboard" />}
+      </Route>
+      <Route path="/admin/users">
+        {user?.role === 'admin' ? <AdminDashboard /> : <Redirect to="/user-dashboard" />}
+      </Route>
+      <Route path="/admin/requests">
+        {user?.role === 'admin' ? <AdminDashboard /> : <Redirect to="/user-dashboard" />}
+      </Route>
+      <Route path="/admin/analytics">
+        {user?.role === 'admin' ? <AdminDashboard /> : <Redirect to="/user-dashboard" />}
+      </Route>
+      <Route path="/admin/settings">
+        {user?.role === 'admin' ? <AdminDashboard /> : <Redirect to="/user-dashboard" />}
+      </Route>
       <Route path="/">
         <Redirect to={user?.role === 'admin' ? '/admin-dashboard' : '/user-dashboard'} />
       </Route>

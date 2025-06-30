@@ -54,18 +54,18 @@ export function BucketTable({ buckets, showActions = false, isAdmin = false }: B
   }
 
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
       <Table>
         <TableHeader>
-          <TableRow>
-            <TableHead>Bucket Name</TableHead>
-            <TableHead>Region</TableHead>
-            {!isAdmin && <TableHead>Access Level</TableHead>}
-            {isAdmin && <TableHead>Objects</TableHead>}
-            {isAdmin && <TableHead>Size</TableHead>}
-            {isAdmin && <TableHead>Users</TableHead>}
-            {!isAdmin && <TableHead>Last Access</TableHead>}
-            {showActions && <TableHead>Actions</TableHead>}
+          <TableRow className="bg-gray-50 dark:bg-gray-800">
+            <TableHead className="font-semibold text-gray-900 dark:text-white">Bucket Name</TableHead>
+            <TableHead className="font-semibold text-gray-900 dark:text-white">Region</TableHead>
+            {!isAdmin && <TableHead className="font-semibold text-gray-900 dark:text-white">Access Level</TableHead>}
+            {isAdmin && <TableHead className="font-semibold text-gray-900 dark:text-white">Objects</TableHead>}
+            {isAdmin && <TableHead className="font-semibold text-gray-900 dark:text-white">Size</TableHead>}
+            {isAdmin && <TableHead className="font-semibold text-gray-900 dark:text-white">Users</TableHead>}
+            {!isAdmin && <TableHead className="font-semibold text-gray-900 dark:text-white">Last Access</TableHead>}
+            {showActions && <TableHead className="font-semibold text-gray-900 dark:text-white">Actions</TableHead>}
           </TableRow>
         </TableHeader>
         <TableBody>

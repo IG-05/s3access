@@ -35,15 +35,15 @@ export function AdminSidebar() {
   ];
 
   return (
-    <aside className="w-64 bg-white shadow-sm border-r border-gray-200 min-h-screen">
-      <div className="p-6 border-b border-gray-200">
+    <aside className="w-64 bg-white dark:bg-gray-800 shadow-sm border-r border-gray-200 dark:border-gray-700 min-h-screen">
+      <div className="p-4 md:p-6 border-b border-gray-200 dark:border-gray-700">
         <div className="flex items-center">
           <div className="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center">
             <Shield className="text-white h-5 w-5" />
           </div>
           <div className="ml-3">
-            <h2 className="text-lg font-semibold text-gray-900">S3 Manager</h2>
-            <p className="text-sm text-gray-500">Admin Dashboard</p>
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">S3 Manager</h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Admin Dashboard</p>
           </div>
         </div>
       </div>
@@ -60,8 +60,8 @@ export function AdminSidebar() {
                 <Link href={item.path}>
                   <a className={`flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
                     isActive 
-                      ? "text-red-600 bg-red-50" 
-                      : "text-gray-700 hover:bg-gray-100"
+                      ? "text-red-600 bg-red-50 dark:bg-red-900/20 dark:text-red-400" 
+                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                   }`}>
                     <Icon className="h-4 w-4 mr-3" />
                     {item.label}
