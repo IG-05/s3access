@@ -9,12 +9,17 @@ export default function CallbackPage() {
 
   useEffect(() => {
     const handleCallback = async () => {
+      console.log('Callback page loaded');
+      console.log('Current URL:', window.location.href);
+      console.log('Search params:', window.location.search);
+      
       const urlParams = new URLSearchParams(window.location.search);
+      const allParams = Object.fromEntries(urlParams);
+      console.log('All URL parameters:', allParams);
+      
       const code = urlParams.get('code');
       const error = urlParams.get('error');
       const errorDescription = urlParams.get('error_description');
-
-      console.log('Callback handler - URL params:', Object.fromEntries(urlParams));
 
       if (error) {
         console.error('OAuth error:', error, errorDescription);
@@ -25,18 +30,22 @@ export default function CallbackPage() {
 
       if (!code) {
         console.error('No authorization code received');
+        console.log('Available parameters:', allParams);
         setStatus('error');
-        setError('No authorization code received from Cognito');
+        setError('No authorization code received from Cognito. Check Cognito App Client configuration.');
         return;
       }
 
       try {
         console.log('Processing authorization code:', code);
+        setStatus('processing');
         const tokens = await exchangeCodeForTokens(code);
+        console.log('Token exchange successful, storing tokens');
         storeTokens(tokens);
         setStatus('success');
         
         // Redirect to main app after successful authentication
+        console.log('Redirecting to main app in 2 seconds');
         setTimeout(() => {
           window.location.href = '/';
         }, 2000);

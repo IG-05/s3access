@@ -1,4 +1,4 @@
-import { Switch, Route, Redirect } from "wouter";
+import { Switch, Route, Redirect, useLocation } from "wouter";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./lib/queryClient";
 import { Toaster } from "@/components/ui/toaster";
@@ -12,6 +12,12 @@ import NotFound from "@/pages/not-found";
 
 function AuthenticatedApp() {
   const { user, isAuthenticated, isLoading } = useAuth();
+  const [location] = useLocation();
+
+  // Allow callback route to process without authentication check
+  if (location === '/callback') {
+    return <CallbackPage />;
+  }
 
   if (isLoading) {
     return (
