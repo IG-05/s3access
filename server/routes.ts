@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { getCognitoUser, determineUserRole } from "./services/cognito";
-import { listAllS3Buckets, getBucketStats, formatFileSize } from "./services/s3";
+import { listAllS3Buckets, getBucketStats, formatFileSize, getBucketObjects } from "./services/s3";
 import { insertAccessRequestSchema, updateAccessRequestSchema } from "@shared/schema";
 import { z } from "zod";
 
@@ -229,6 +229,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } else {
         res.status(500).json({ error: 'Failed to update access request' });
       }
+    }
+  });
+
+  // Get bucket contents
+  app.get("/api/buckets/:name/objects", authenticateUser, async (req: any, res) => {
+    try {
+      const bucketName = req.params.name;
+      const objects = await getBucketObjects(bucketName);
+      res.json(objects);
+    } catch (error) {
+      console.error('Error fetching bucket objects:', error);
+      res.status(500).json({ error: 'Failed to fetch bucket objects' });
     }
   });
 

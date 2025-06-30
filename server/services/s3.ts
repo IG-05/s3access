@@ -70,10 +70,18 @@ export async function getBucketObjects(bucketName: string): Promise<any[]> {
     });
     
     const response = await s3Client.send(command);
-    return response.Contents || [];
+    
+    return response.Contents?.map(obj => ({
+      key: obj.Key,
+      size: obj.Size ? formatFileSize(obj.Size) : '0 B',
+      sizeBytes: obj.Size || 0,
+      lastModified: obj.LastModified,
+      etag: obj.ETag,
+      type: obj.Key?.split('.').pop() || 'file'
+    })) || [];
   } catch (error) {
     console.error(`Error listing objects in bucket ${bucketName}:`, error);
-    throw error;
+    throw new Error(`Failed to access bucket ${bucketName}: ${error instanceof Error ? error.message : 'Access denied'}`);
   }
 }
 
@@ -101,3 +109,5 @@ export function formatFileSize(bytes: number): string {
   
   return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
 }
+
+

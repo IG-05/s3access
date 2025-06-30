@@ -81,9 +81,9 @@ export function AdminSidebar() {
         </ul>
       </nav>
 
-      <div className="absolute bottom-4 left-4 right-4">
-        <div className="bg-gray-100 dark:bg-gray-700 rounded-lg p-3">
-          <div className="flex items-center">
+      <div className="mt-auto p-4 border-t border-gray-200 dark:border-gray-700">
+        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
+          <div className="flex items-center mb-3">
             <div className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center">
               <User className="text-white h-4 w-4" />
             </div>
@@ -92,15 +92,15 @@ export function AdminSidebar() {
                 {user?.username || "Admin"}
               </p>
               <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                {user?.email || "admin@company.com"}
+                Administrator
               </p>
             </div>
           </div>
           <Button
-            variant="ghost"
+            variant="outline"
             size="sm"
             onClick={() => logout()}
-            className="w-full mt-3 text-xs text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white"
+            className="w-full text-xs"
           >
             <LogOut className="h-3 w-3 mr-1" />
             Sign Out

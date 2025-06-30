@@ -8,7 +8,7 @@ export default function AdminAnalytics() {
       <div className="flex">
         <AdminSidebar />
         
-        <main className="flex-1 p-4 md:p-6 lg:p-8 max-w-full overflow-hidden">
+        <main className="flex-1 p-4 md:p-6 lg:p-8 ml-0">
           <div className="mb-6">
             <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">Analytics</h1>
             <p className="text-gray-600 dark:text-gray-300 mt-1">Monitor usage patterns and system performance</p>
@@ -111,7 +111,7 @@ export default function AdminAnalytics() {
               <p className="text-sm text-gray-600 dark:text-gray-400">Comprehensive system usage and performance metrics</p>
             </CardHeader>
             <CardContent>
-              <div className="h-96 flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded-lg">
+              <div className="h-80 flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded-lg">
                 <div className="text-center">
                   <BarChart3 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                   <p className="text-gray-500 dark:text-gray-400">Analytics dashboard coming soon</p>
