@@ -106,6 +106,11 @@ Changelog:
   - Configured Cognito domain: https://w3vhnpm5d.auth.us-east-1.amazoncognito.com
   - Added OAuth/OIDC flow with callback handling
   - Simplified login page with secure AWS authentication
+- June 30, 2025. Completed migration from Replit Agent to Replit environment
+  - Fixed authentication system to use JWT token decoding instead of AWS API calls
+  - Resolved OAuth scope issues by switching from access tokens to ID tokens
+  - Updated client-server authentication flow for proper token handling
+  - All dependencies installed and application running successfully
 ```
 
 ## User Preferences

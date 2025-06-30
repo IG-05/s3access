@@ -23,7 +23,7 @@ export function useAuth() {
   // Check authentication status
   const { data: authData, isLoading: isCheckingAuth } = useQuery({
     queryKey: ['/api/auth/me'],
-    enabled: !!getStoredTokens().accessToken,
+    enabled: !!getStoredTokens().idToken,
     retry: false,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
@@ -83,7 +83,7 @@ export function useAuth() {
         isLoading: false,
         error: null,
       });
-    } else if (!isCheckingAuth && !getStoredTokens().accessToken) {
+    } else if (!isCheckingAuth && !getStoredTokens().idToken) {
       setAuthState({
         user: null,
         isAuthenticated: false,

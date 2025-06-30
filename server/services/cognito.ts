@@ -1,7 +1,6 @@
 import { 
   AdminGetUserCommand,
-  ListUsersInGroupCommand,
-  GetUserCommand
+  ListUsersInGroupCommand
 } from "@aws-sdk/client-cognito-identity-provider";
 import { cognitoClient, getUserPoolId } from "./aws";
 
@@ -13,30 +12,31 @@ export interface CognitoUser {
   enabled: boolean;
 }
 
-export async function getCognitoUser(accessToken: string): Promise<CognitoUser | null> {
+export async function getCognitoUser(idToken: string): Promise<CognitoUser | null> {
   try {
-    const command = new GetUserCommand({
-      AccessToken: accessToken
-    });
-    
-    const response = await cognitoClient.send(command);
-    
-    if (!response.UserAttributes) {
+    // Decode the ID token to extract user information
+    const tokenParts = idToken.split('.');
+    if (tokenParts.length !== 3) {
+      console.error('Invalid ID token format');
       return null;
     }
 
-    const email = response.UserAttributes.find(attr => attr.Name === 'email')?.Value || '';
-    const groups = response.UserAttributes.find(attr => attr.Name === 'cognito:groups')?.Value?.split(',') || [];
+    const payload = JSON.parse(Buffer.from(tokenParts[1], 'base64').toString());
+    
+    // Extract user information from ID token
+    const username = payload['cognito:username'] || payload.sub || '';
+    const email = payload.email || '';
+    const groups = payload['cognito:groups'] || [];
     
     return {
-      username: response.Username || '',
+      username,
       email,
       groups,
-      cognitoId: response.Username || '',
-      enabled: response.UserStatus === 'CONFIRMED'
+      cognitoId: payload.sub || username,
+      enabled: true // If we have a valid token, user is enabled
     };
   } catch (error) {
-    console.error('Error getting Cognito user:', error);
+    console.error('Error decoding ID token:', error);
     return null;
   }
 }

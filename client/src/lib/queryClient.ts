@@ -12,15 +12,15 @@ export async function apiRequest(
   url: string,
   data?: unknown | undefined,
 ): Promise<Response> {
-  const accessToken = localStorage.getItem('accessToken');
+  const idToken = localStorage.getItem('idToken');
   const headers: Record<string, string> = {};
   
   if (data) {
     headers["Content-Type"] = "application/json";
   }
   
-  if (accessToken) {
-    headers["Authorization"] = `Bearer ${accessToken}`;
+  if (idToken) {
+    headers["Authorization"] = `Bearer ${idToken}`;
   }
 
   const res = await fetch(url, {
@@ -40,14 +40,14 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
-    // Get stored access token
-    const accessToken = localStorage.getItem('accessToken');
+    // Get stored ID token for authentication
+    const idToken = localStorage.getItem('idToken');
     const headers: Record<string, string> = {
       credentials: "include",
     };
     
-    if (accessToken) {
-      headers['Authorization'] = `Bearer ${accessToken}`;
+    if (idToken) {
+      headers['Authorization'] = `Bearer ${idToken}`;
     }
 
     const res = await fetch(queryKey[0] as string, {

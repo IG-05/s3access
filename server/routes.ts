@@ -10,14 +10,14 @@ import { z } from "zod";
 async function authenticateUser(req: any, res: any, next: any) {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ error: 'No access token provided' });
+    return res.status(401).json({ error: 'No ID token provided' });
   }
 
-  const token = authHeader.substring(7);
-  const cognitoUser = await getCognitoUser(token);
+  const idToken = authHeader.substring(7);
+  const cognitoUser = await getCognitoUser(idToken);
   
   if (!cognitoUser) {
-    return res.status(401).json({ error: 'Invalid access token' });
+    return res.status(401).json({ error: 'Invalid ID token' });
   }
 
   // Get or create user in our storage
