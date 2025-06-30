@@ -11,8 +11,7 @@ export interface AuthResult {
 
 // Generate Cognito Hosted UI URLs
 function getCognitoHostedUIUrl() {
-  const domain = `https://${userPoolId.split('_')[1]}-cognito.auth.${region}.amazonaws.com`;
-  return domain;
+  return 'https://w3vhnpm5d.auth.us-east-1.amazoncognito.com';
 }
 
 export function redirectToLogin() {
@@ -70,10 +69,12 @@ export function getStoredTokens(): { accessToken: string | null; idToken: string
   };
 }
 
-export function storeTokens(tokens: { accessToken: string; idToken: string; refreshToken: string }): void {
+export function storeTokens(tokens: { accessToken: string; idToken: string; refreshToken?: string }): void {
   localStorage.setItem('accessToken', tokens.accessToken);
   localStorage.setItem('idToken', tokens.idToken);
-  localStorage.setItem('refreshToken', tokens.refreshToken);
+  if (tokens.refreshToken) {
+    localStorage.setItem('refreshToken', tokens.refreshToken);
+  }
 }
 
 // Parse URL parameters to get authorization code

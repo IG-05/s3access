@@ -102,6 +102,10 @@ The build process creates a `dist` directory containing:
 ```
 Changelog:
 - June 30, 2025. Initial setup
+- June 30, 2025. Implemented AWS Cognito hosted UI authentication
+  - Configured Cognito domain: https://w3vhnpm5d.auth.us-east-1.amazoncognito.com
+  - Added OAuth/OIDC flow with callback handling
+  - Simplified login page with secure AWS authentication
 ```
 
 ## User Preferences
