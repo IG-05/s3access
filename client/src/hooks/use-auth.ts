@@ -76,9 +76,9 @@ export function useAuth() {
 
   // Update auth state based on query results
   useEffect(() => {
-    if (authData && authData.user) {
+    if (authData && (authData as any).user) {
       setAuthState({
-        user: authData.user,
+        user: (authData as any).user,
         isAuthenticated: true,
         isLoading: false,
         error: null,

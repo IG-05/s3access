@@ -40,7 +40,7 @@ export default function AdminDashboard() {
 
           {/* Admin Stats */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
-            <Card className="transition-all duration-200 hover:shadow-lg">
+            <Card className="transition-all duration-200 hover:shadow-lg border-l-4 border-l-blue-500">
               <CardContent className="p-4 md:p-6">
                 <div className="flex items-center">
                   <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg">
@@ -54,7 +54,7 @@ export default function AdminDashboard() {
               </CardContent>
             </Card>
 
-            <Card className="transition-all duration-200 hover:shadow-lg">
+            <Card className="transition-all duration-200 hover:shadow-lg border-l-4 border-l-green-500">
               <CardContent className="p-4 md:p-6">
                 <div className="flex items-center">
                   <div className="p-2 bg-green-100 dark:bg-green-900 rounded-lg">
@@ -68,7 +68,7 @@ export default function AdminDashboard() {
               </CardContent>
             </Card>
 
-            <Card className="transition-all duration-200 hover:shadow-lg">
+            <Card className="transition-all duration-200 hover:shadow-lg border-l-4 border-l-yellow-500">
               <CardContent className="p-4 md:p-6">
                 <div className="flex items-center">
                   <div className="p-2 bg-yellow-100 dark:bg-yellow-900 rounded-lg">
@@ -82,7 +82,7 @@ export default function AdminDashboard() {
               </CardContent>
             </Card>
 
-            <Card className="transition-all duration-200 hover:shadow-lg">
+            <Card className="transition-all duration-200 hover:shadow-lg border-l-4 border-l-red-500">
               <CardContent className="p-4 md:p-6">
                 <div className="flex items-center">
                   <div className="p-2 bg-red-100 dark:bg-red-900 rounded-lg">

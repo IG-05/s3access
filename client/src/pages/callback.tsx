@@ -93,8 +93,8 @@ export default function CallbackPage() {
                 <p className="mb-2">Authentication failed:</p>
                 <p className="text-sm">{error}</p>
                 <button 
-                  onClick={() => window.location.href = '/'}
-                  className="mt-4 px-4 py-2 bg-primary text-white rounded hover:bg-primary/90"
+                  onClick={() => window.location.href = '/login'}
+                  className="mt-4 px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600"
                 >
                   Try Again
                 </button>

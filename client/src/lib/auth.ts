@@ -26,7 +26,7 @@ export function redirectToLogin() {
 
 export function redirectToLogout() {
   const cognitoDomain = getCognitoHostedUIUrl();
-  const logoutUrl = `${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(window.location.origin)}`;
+  const logoutUrl = `${cognitoDomain}/logout?client_id=${clientId}&redirect_uri=${encodeURIComponent(window.location.origin)}`;
   window.location.href = logoutUrl;
 }
 

@@ -82,7 +82,7 @@ export default function UserAccessRequests() {
                   <div className="ml-4">
                     <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Pending</p>
                     <p className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
-                      {requests?.filter(r => r.status === 'pending').length || 0}
+                      {requests?.filter((r: any) => r.status === 'pending').length || 0}
                     </p>
                   </div>
                 </div>
@@ -98,7 +98,7 @@ export default function UserAccessRequests() {
                   <div className="ml-4">
                     <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Approved</p>
                     <p className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
-                      {requests?.filter(r => r.status === 'approved').length || 0}
+                      {requests?.filter((r: any) => r.status === 'approved').length || 0}
                     </p>
                   </div>
                 </div>
@@ -114,7 +114,7 @@ export default function UserAccessRequests() {
                   <div className="ml-4">
                     <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Denied</p>
                     <p className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
-                      {requests?.filter(r => r.status === 'denied').length || 0}
+                      {requests?.filter((r: any) => r.status === 'denied').length || 0}
                     </p>
                   </div>
                 </div>
@@ -142,7 +142,7 @@ export default function UserAccessRequests() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {requests.map((request) => (
+                      {requests.map((request: any) => (
                         <TableRow key={request.id} className="hover:bg-gray-50 dark:hover:bg-gray-800">
                           <TableCell>
                             <div className="flex items-center">
