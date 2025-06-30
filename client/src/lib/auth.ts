@@ -39,6 +39,16 @@ export function authenticateUser(username: string, password: string): Promise<Au
       onFailure: (err) => {
         reject(err);
       },
+      newPasswordRequired: (userAttributes, requiredAttributes) => {
+        // For now, reject with a specific error that the UI can handle
+        reject({
+          code: 'NewPasswordRequired',
+          message: 'New password required',
+          user: cognitoUser,
+          userAttributes,
+          requiredAttributes
+        });
+      }
     });
   });
 }
@@ -69,4 +79,22 @@ export function storeTokens(tokens: { accessToken: string; idToken: string; refr
   localStorage.setItem('accessToken', tokens.accessToken);
   localStorage.setItem('idToken', tokens.idToken);
   localStorage.setItem('refreshToken', tokens.refreshToken);
+}
+
+export function completeNewPasswordChallenge(cognitoUser: CognitoUser, newPassword: string): Promise<AuthResult> {
+  return new Promise((resolve, reject) => {
+    cognitoUser.completeNewPasswordChallenge(newPassword, {}, {
+      onSuccess: (result) => {
+        resolve({
+          accessToken: result.getAccessToken().getJwtToken(),
+          idToken: result.getIdToken().getJwtToken(),
+          refreshToken: result.getRefreshToken().getToken(),
+          user: cognitoUser,
+        });
+      },
+      onFailure: (err) => {
+        reject(err);
+      }
+    });
+  });
 }
